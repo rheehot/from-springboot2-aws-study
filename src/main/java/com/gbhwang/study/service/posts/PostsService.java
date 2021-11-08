@@ -2,13 +2,16 @@ package com.gbhwang.study.service.posts;
 
 import com.gbhwang.study.domain.posts.Posts;
 import com.gbhwang.study.domain.posts.PostsRepository;
+import com.gbhwang.study.web.dto.PostsListResponseDto;
 import com.gbhwang.study.web.dto.PostsResponseDto;
 import com.gbhwang.study.web.dto.PostsSaveRequestDto;
 import com.gbhwang.study.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -35,5 +38,12 @@ public class PostsService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
 
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
